@@ -1,0 +1,23 @@
+Blockly.Msg.IKB_1 = {};
+
+Blockly.Msg.IKB_1.DIGTIAL_READ_PIN = "อ่านค่าดิจิตอลที่ช่อง";
+Blockly.Msg.IKB_1.DIGTIAL_WRITE_PIN = "เขียนค่าดิจิตอลที่ช่อง";
+Blockly.Msg.IKB_1.TO = "เป็น";
+Blockly.Msg.IKB_1.ANALOG_READ_PIN = "อ่านค่าอนาล็อกที่ช่อง";
+Blockly.Msg.IKB_1.SET_MOTOR = "มอเตอร์ช่อง";
+Blockly.Msg.IKB_1.DIRECTION = "หมุน";
+Blockly.Msg.IKB_1.FORWARD = "ตามเข็ม";
+Blockly.Msg.IKB_1.BACKWARD = "ทวนเข็ม";
+Blockly.Msg.IKB_1.SPEED = "ที่ความเร็ว";
+Blockly.Msg.IKB_1.SET_SERVO = "ตั้งเซอร์โวช่อง";
+Blockly.Msg.IKB_1.DEGREE = "หมุนไปที่ (องศา)";
+Blockly.Msg.IKB_1.SET_SERVO2 = "ตั้งเซอร์โวปรับแต่งช่อง";
+Blockly.Msg.IKB_1.STOP = "หยุด";
+Blockly.Msg.IKB_1.LEFT = "ซ้าย";
+Blockly.Msg.IKB_1.RIGHT = "ขวา";
+Blockly.Msg.IKB_1.SERIAL_SET_BAUD = "serial ตั้งค่า baud rate เป็น";
+Blockly.Msg.IKB_1.SERIAL_WRITE = "serial ส่งข้อความ";
+Blockly.Msg.IKB_1.SERIAL_WRITE_NEW_LINE = "serial ส่งข้อความพร้อมขึ้นบรรทัดใหม่";
+Blockly.Msg.IKB_1.SERIAL_AVAILABLE = "serial จำนวนข้อมูลที่รออ่าน";
+Blockly.Msg.IKB_1.SERIAL_READ = "serial อ่านข้อมูล";
+Blockly.Msg.IKB_1.BYTES = "ตัวอักษร";
