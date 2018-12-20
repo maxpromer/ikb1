@@ -15,7 +15,7 @@
 
 ### กรณีติดตั้งจาก Source code
 
-เมื่อ Clone ไปแล้ว จะได้โฟลเดอร์ ikb_1_plugin-master ให้แก้ชื่อเป็น ikb_1_plugin แล้วย้ายไปไว้ในโฟลเดอร์ %userprofile%\AppData\Local\KidBright\app-1.0.0\resources\app\kbide\plugins เมื่อเปิดโปรแกรม KidBrightIDE บล็อกจะอยู่ใน ปลั๊กอิน > iKB-1
+เมื่อ Clone ไปแล้ว จะได้โฟลเดอร์ ikb_1_plugin-master ให้แก้ชื่อเป็น ikb_1_plugin แล้วย้ายไปไว้ในโฟลเดอร์ `<ไดร์ที่ติดตั้ง Windows>\Users\<Username>\AppData\Local\KidBright\app-1.0.0\resources\app\kbide\plugins` เมื่อเปิดโปรแกรม KidBrightIDE บล็อกจะอยู่ใน ปลั๊กอิน > iKB-1
 
 ### กรณีติดตั้งจากตัวช่วยติดตั้ง
 
