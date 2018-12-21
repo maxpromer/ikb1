@@ -16,17 +16,8 @@ void iKB_1::init(void) {
 	// Start initialized
 	state = s_detect;
 	
-	// Reset speed of I2C
-	i2c_config_t conf;
-
-    conf.mode = I2C_MODE_MASTER;
-    conf.sda_io_num = CHAIN_SDA_GPIO;
-    conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
-    conf.scl_io_num = CHAIN_SCL_GPIO;
-    conf.scl_pullup_en = GPIO_PULLUP_ENABLE;
-    conf.master.clk_speed = 100E3; // Set speed to 200kHz
-
-	i2c_param_config(I2C_NUM_1, &conf);
+	// Set clock
+	i2c_setClock(IKB_1_I2C_CLOCK);
 	
 	// Set buffer to old data
 	dataBuffer.old = true;
@@ -136,6 +127,12 @@ void iKB_1::process(Driver *drv) {
 			
 			// vTaskDelay(10 / portTICK_RATE_MS);
 			
+			// If a lot of data, Change speed of i2c
+			bool i2cSpeedChange = dataBuffer.read.length > 3;
+			if (i2cSpeedChange) {
+				i2c_setClock(10E3); // Set to 10kHz
+			}
+			
 			// Send request data
 			uint8_t *pointer = 0;
 			if (i2c->read(channel, address, pointer, 0, dataBuffer.read.data.block, dataBuffer.read.length) != ESP_OK) {
@@ -145,6 +142,11 @@ void iKB_1::process(Driver *drv) {
 					state = s_error;
 				}
 				break;
+			}
+			
+			// Set speed to default
+			if (i2cSpeedChange) {
+				i2c_setClock(IKB_1_I2C_CLOCK);
 			}
 			
 			// Set it to old data
@@ -176,15 +178,28 @@ void iKB_1::process(Driver *drv) {
 }
 
 // Method
+void iKB_1::i2c_setClock(uint32_t clock) {
+	// Reset speed of I2C
+	i2c_config_t conf;
+
+	conf.mode = I2C_MODE_MASTER;
+	conf.sda_io_num = CHAIN_SDA_GPIO;
+	conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
+	conf.scl_io_num = CHAIN_SCL_GPIO;
+	conf.scl_pullup_en = GPIO_PULLUP_ENABLE;
+	conf.master.clk_speed = clock;
+
+	i2c_param_config(I2C_NUM_1, &conf);
+}
 
 // Wait send data finish
-bool iKB_1::sync_data() {
-	int waiting_time = 0;
-	while((!dataBuffer.old) && (waiting_time < 1000)) { // loop if old flag not set and time for wait not more than 1s
+bool iKB_1::sync_data(uint16_t wait_time) {
+	uint16_t waiting_time = 0;
+	while((!dataBuffer.old) && (waiting_time < wait_time)) { // loop if old flag not set and time for wait not more than 1s
 		vTaskDelay(50 / portTICK_RATE_MS);
 		waiting_time += 50;
 	} 
-	return waiting_time < 1000;
+	return waiting_time < wait_time;
 }
 
 // Send only, no parameter, no request
@@ -472,13 +487,19 @@ char iKB_1::uart_read() {
 }
 
 char* iKB_1::uart_read(uint8_t count) {
-	count = fmin(count, 63); // 63 bytes for character and 1 byte for end of string (\0)
+	// count = fmin(count, 63); // 63 bytes for character and 1 byte for end of string (\0)
+	count = fmin(count, 30); // limit 30 bytes per round
 	
 	memset(dataBuffer.read.data.block, 0, sizeof dataBuffer.read.data.block);
 	send(0x02, count, count);
 	
-	if (sync_data()) {
-		dataBuffer.read.data.block[count] = 0; // end of string
+	if (sync_data(count * 300)) {
+		// dataBuffer.read.data.block[count] = 0; // end of string
+		
+		#ifdef IKB_1_DEBUG
+		uart_write_bytes(UART_NUM_0, (char*)dataBuffer.read.data.block, count);
+		#endif
+		
 		return (char*)dataBuffer.read.data.block;
 	} else {
 		return 0;

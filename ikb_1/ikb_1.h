@@ -10,6 +10,9 @@
 #include "driver/uart.h"
 #include "kidbright32.h"
 
+// #define IKB_1_DEBUG
+#define IKB_1_I2C_CLOCK 100E3
+
 /*
 enum {
 	iKB_CHANEL1 = 1,
@@ -66,7 +69,8 @@ class iKB_1 : public Device {
 		unsigned long uartBaud = 9600;
 		
 		// method
-		bool sync_data() ;
+		void i2c_setClock(uint32_t clock) ;
+		bool sync_data(uint16_t wait_time = 1000) ;
 		bool send(uint8_t command) ;
 		bool send(uint8_t command, uint8_t parameter) ;
 		bool sendQ(uint8_t command, uint8_t parameter) ;

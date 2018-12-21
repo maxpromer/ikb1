@@ -6,7 +6,7 @@ Blockly.Blocks['ikb1_digital_read'] = {
 		this.setOutput(true, ["Number", "Boolean"]);
 		this.setColour(180);
 		this.setTooltip("");
-		this.setHelpUrl("https://inex.co.th/");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
 
@@ -23,7 +23,7 @@ Blockly.Blocks['ikb1_digital_write'] = {
 		this.setNextStatement(true, null);
 		this.setColour(180);
 		this.setTooltip("");
-		this.setHelpUrl("https://inex.co.th/");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
 
@@ -35,7 +35,7 @@ Blockly.Blocks['ikb1_analog_read'] = {
 		this.setOutput(true, "Number");
 		this.setColour(180);
 		this.setTooltip("");
-		this.setHelpUrl("https://inex.co.th/");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
 
@@ -56,7 +56,7 @@ Blockly.Blocks['ikb1_motor'] = {
 		this.setNextStatement(true, null);
 		this.setColour(180);
 		this.setTooltip("");
-		this.setHelpUrl("https://inex.co.th/");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
 
@@ -73,7 +73,7 @@ Blockly.Blocks['ikb1_servo'] = {
 		this.setNextStatement(true, null);
 		this.setColour(180);
 		this.setTooltip("");
-		this.setHelpUrl("https://inex.co.th/");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
 
@@ -94,7 +94,7 @@ Blockly.Blocks['ikb1_servo2'] = {
 		this.setNextStatement(true, null);
 		this.setColour(180);
 		this.setTooltip("");
-		this.setHelpUrl("https://inex.co.th/");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
 
@@ -108,7 +108,7 @@ Blockly.Blocks['ikb1_serial_config'] = {
 		this.setNextStatement(true, null);
 		this.setColour(180);
 		this.setTooltip("");
-		this.setHelpUrl("https://inex.co.th/");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
 
@@ -122,7 +122,7 @@ Blockly.Blocks['ikb1_serial_write'] = {
 		this.setNextStatement(true, null);
 		this.setColour(180);
 		this.setTooltip("");
-		this.setHelpUrl("https://inex.co.th/");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
 
@@ -136,7 +136,7 @@ Blockly.Blocks['ikb1_serial_write_line'] = {
 		this.setNextStatement(true, null);
 		this.setColour(180);
 		this.setTooltip("");
-		this.setHelpUrl("https://inex.co.th/");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
 
@@ -148,7 +148,7 @@ Blockly.Blocks['ikb1_serial_available'] = {
 		this.setOutput(true, "Number");
 		this.setColour(180);
 		this.setTooltip("");
-		this.setHelpUrl("https://inex.co.th/");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
 
@@ -163,6 +163,6 @@ Blockly.Blocks['ikb1_serial_read'] = {
 		this.setOutput(true, "String");
 		this.setColour(180);
 		this.setTooltip("");
-		this.setHelpUrl("https://inex.co.th/");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
