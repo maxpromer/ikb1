@@ -68,6 +68,8 @@ class iKB_1 : public Device {
 		
 		unsigned long uartBaud = 9600;
 		
+		char strBuffer[257];
+		
 		// method
 		void i2c_setClock(uint32_t clock) ;
 		bool sync_data(uint16_t wait_time = 1000) ;
@@ -76,6 +78,7 @@ class iKB_1 : public Device {
 		bool sendQ(uint8_t command, uint8_t parameter) ;
 		bool send(uint8_t command, uint8_t parameter, int request_length) ;
 		bool send(uint8_t command, int request_length) ;
+		int uart_read_from_iKB_1(uint8_t count) ;
 
 	public:
 		// constructor
@@ -101,7 +104,6 @@ class iKB_1 : public Device {
 		bool servo2(uint8_t ch, uint8_t dir, uint8_t speed) ;
 		
 		bool uart_config(unsigned long baud) ;
-		uint8_t uart_available() ;
 		bool uart_write(char data) ;
 		bool uart_write(bool data) ;
 		bool uart_write(double data) ;
@@ -111,6 +113,7 @@ class iKB_1 : public Device {
 		bool uart_write_line(double data) ;
 		bool uart_write_line(const char* data) ;
 		
+		uint16_t uart_available() ;
 		char uart_read() ;
 		char* uart_read(uint8_t count) ;
 		char* uart_read_string();
@@ -139,5 +142,22 @@ static iKB_1_Queue iKB_1_qWrite;
 
 void iKB_1_Enqueue(iKB_1_Queue *q, iKB_1_CommandData data) ;
 iKB_1_CommandData iKB_1_Dequeue(iKB_1_Queue *q) ;
+
+
+// Circle Queue 2
+#define iKB_1_DATA_BUFFER_SIZE 256
+#define iKB_1_DATA_QUEUE_ROLL 1
+
+typedef struct {
+	int count;
+	int rear;
+	int front;
+	uint8_t data[iKB_1_DATA_BUFFER_SIZE];
+} iKB_1_DataQueue;
+
+static iKB_1_DataQueue iKB_1_qSerailRead;
+
+void iKB_1_Data_Enqueue(iKB_1_DataQueue *q, uint8_t data) ;
+uint8_t iKB_1_Data_Dequeue(iKB_1_DataQueue *q) ;
 
 #endif

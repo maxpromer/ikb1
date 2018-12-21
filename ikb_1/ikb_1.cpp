@@ -26,6 +26,11 @@ void iKB_1::init(void) {
 	iKB_1_qWrite.front = -1;
 	iKB_1_qWrite.rear  = -1;
 	iKB_1_qWrite.count = 0;
+	
+	// clear queue (2)
+	iKB_1_qSerailRead.front = -1;
+	iKB_1_qSerailRead.rear  = -1;
+	iKB_1_qSerailRead.count = 0;
 }
 
 int iKB_1::prop_count(void) {
@@ -276,7 +281,9 @@ bool iKB_1::send(uint8_t command, int request_length) {
 }
 
 bool iKB_1::reset(bool sync = false) {
-	send((uint8_t)0x0);
+	if (!send((uint8_t)0x0)) {
+		return false;
+	}
 	
 	return sync ? sync_data() : true;
 }
@@ -287,7 +294,9 @@ uint8_t iKB_1::digital_read(uint8_t ch, bool pullup) {
 		return 0;
 	}
 	
-	send(0x08 + ch, (pullup ? 3 : 2), 1);
+	if (!send(0x08 + ch, (pullup ? 3 : 2), 1)) {
+		return 0;
+	}
 	
 	if (sync_data()) {
 		return dataBuffer.read.data.block[0] != 0;
@@ -318,7 +327,9 @@ int iKB_1::analog_read(uint8_t ch) {
 		return 0;
 	}
 	
-	send(0x80 + (ch << 4), (int)2);
+	if (!send(0x80 + (ch << 4), (int)2)) {
+		return false;
+	}
 	
 	if (sync_data()) {
 		return (dataBuffer.read.data.block[0]<<8)|dataBuffer.read.data.block[1];
@@ -399,16 +410,6 @@ bool iKB_1::uart_config(unsigned long baud) {
 	return true;
 }
 
-uint8_t iKB_1::uart_available() {
-	send(0x01, (int)1);
-	
-	if (sync_data()) {
-		return dataBuffer.read.data.block[0];
-	} else {
-		return 0;
-	}
-}
-
 bool iKB_1::uart_write(char data) {
 	char dataStr[] = { data, 0 };
 	return uart_write(dataStr);
@@ -482,28 +483,107 @@ bool iKB_1::uart_write_line(const char* data) {
 	return uart_write(strBuffer);
 }
 
+uint16_t iKB_1::uart_available() {
+	uint8_t newDataIniKB_1 = 0;
+	uint8_t readCount = 0;
+	
+	if (!send(0x01, (int)1)) {
+		#ifdef IKB_1_DEBUG
+		char bufferHere[40];
+		sprintf(bufferHere, "Read serial available fail");
+		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
+		#endif
+	}
+		
+	if (sync_data()) {
+		newDataIniKB_1 = dataBuffer.read.data.block[0];
+			
+		#ifdef IKB_1_DEBUG
+		char bufferHere[20];
+		sprintf(bufferHere, "Data new (iKB-1): %d\n", newDataIniKB_1);
+		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
+		#endif
+			
+		while(newDataIniKB_1 > 0) {
+			readCount = uart_read_from_iKB_1(newDataIniKB_1);
+			
+			#ifdef IKB_1_DEBUG
+			char bufferHere[20];
+			sprintf(bufferHere, "Read: %d\n", readCount);
+			uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
+			#endif
+			
+			if (readCount > 0) {
+				for (int inx=0;inx<readCount;inx++) {
+					iKB_1_Data_Enqueue(&iKB_1_qSerailRead, dataBuffer.read.data.block[inx]);
+				}
+			}
+			newDataIniKB_1 = newDataIniKB_1 - readCount;
+		}
+	} else { // some error !
+		#ifdef IKB_1_DEBUG
+		char bufferHere[20];
+		sprintf(bufferHere, "Some Error !\n");
+		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
+		#endif
+			
+		newDataIniKB_1 = 0;
+	}
+	
+	return iKB_1_qSerailRead.count;
+}
+
 char iKB_1::uart_read() {
-	return uart_read(1)[0];
+	// return uart_read(1)[0];
+	return iKB_1_Data_Dequeue(&iKB_1_qSerailRead);
 }
 
 char* iKB_1::uart_read(uint8_t count) {
+	count = fmin(count, 256);
+	count = fmin(iKB_1_qSerailRead.count, count);
+	
+	memset(strBuffer, 0, sizeof strBuffer);
+	for (int inx=0;inx<count;inx++) {
+		strBuffer[inx] = uart_read();
+		
+		#ifdef IKB_1_DEBUG
+		/*
+		char bufferHere[10];
+		sprintf(bufferHere, "C: %c\n", strBuffer[inx]);
+		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
+		*/
+		#endif
+	}
+	
+	#ifdef IKB_1_DEBUG
+	char bufferHere[80];
+	sprintf(bufferHere, "Data Read (%d): %s\n", count, strBuffer);
+	uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
+	#endif
+	
+	return strBuffer;
+}
+
+int iKB_1::uart_read_from_iKB_1(uint8_t count) {
 	// count = fmin(count, 63); // 63 bytes for character and 1 byte for end of string (\0)
 	count = fmin(count, 30); // limit 30 bytes per round
 	
 	memset(dataBuffer.read.data.block, 0, sizeof dataBuffer.read.data.block);
-	send(0x02, count, count);
-	
-	if (sync_data(count * 300)) {
-		// dataBuffer.read.data.block[count] = 0; // end of string
-		
-		#ifdef IKB_1_DEBUG
-		uart_write_bytes(UART_NUM_0, (char*)dataBuffer.read.data.block, count);
-		#endif
-		
-		return (char*)dataBuffer.read.data.block;
-	} else {
+	if (!send(0x02, count, count)) {
 		return 0;
 	}
+	
+	if (sync_data(count * 300)) {
+		#ifdef IKB_1_DEBUG
+		char bufferHere[80];
+		sprintf(bufferHere, "Data Read From iKB-1: %s\n", dataBuffer.read.data.block);
+		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
+		#endif
+		
+		return count;
+	}
+	
+	return 0;
 }
 
 // Not supported
@@ -541,6 +621,38 @@ iKB_1_CommandData iKB_1_Dequeue(iKB_1_Queue *q) {
 	data = q->data[q->front];
 	q->front++;
 	if (q->front == iKB_1_BUFFER_SIZE) q->front = 0;
+	q->count--;
+	
+	if (q->count == 0) {
+		q->front = -1;
+		q->rear  = -1;
+	}
+	
+	return data;
+}
+
+// Circle Queue (2)
+void iKB_1_Data_Enqueue(iKB_1_DataQueue *q, uint8_t data) {
+	if (q->count == iKB_1_DATA_BUFFER_SIZE) { // if queue is full
+		if (iKB_1_DATA_QUEUE_ROLL) {
+			iKB_1_Data_Dequeue(q);
+		}
+		return;
+	}
+	
+	q->rear = q->rear == iKB_1_DATA_BUFFER_SIZE ? 0 : q->rear + 1;
+	q->data[q->rear] = data;
+	q->count++;
+	
+	if (q->front == -1) q->front = 0;
+}
+
+uint8_t iKB_1_Data_Dequeue(iKB_1_DataQueue *q) {
+	if (q->count == 0 || q->front == -1) return 0;
+
+	uint8_t data = q->data[q->front];
+	q->front++;
+	if (q->front == iKB_1_DATA_BUFFER_SIZE) q->front = 0;
 	q->count--;
 	
 	if (q->count == 0) {
