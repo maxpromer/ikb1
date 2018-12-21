@@ -26,7 +26,7 @@ Clone โค้ดต้นฉบับได้ที่ https://github.com/max
 
 ต่อบอร์ด iKB-1 เข้ากับบอร์ด KidBright32 ด้วยสาย KB Chain ที่แถมมาด้วย
 
-
+![914LxP.jpg](https://sv1.picz.in.th/images/2018/12/21/914LxP.jpg)
 
 ## บล็อกอ่านค่าดิจิตอล
 
