@@ -21,6 +21,7 @@ Blockly.Msg.IKB_1.SERIAL_WRITE_NEW_LINE = "serial write line";
 Blockly.Msg.IKB_1.SERIAL_AVAILABLE = "serial available";
 Blockly.Msg.IKB_1.SERIAL_READ = "serial read";
 Blockly.Msg.IKB_1.BYTES = "characters";
+Blockly.Msg.IKB_1.SERIAL_READ_ONE_BYTE = "serial read one byte";
 Blockly.Msg.IKB_1.SERIAL_READ_STRING = "serial read string";
 Blockly.Msg.IKB_1.SERIAL_READ_LINE = "serial read line";
 Blockly.Msg.IKB_1.SERIAL_READ_UNTIL = "serial read until";

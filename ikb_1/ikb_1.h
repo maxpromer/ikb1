@@ -13,19 +13,6 @@
 // #define IKB_1_DEBUG
 #define IKB_1_I2C_CLOCK 100E3
 
-/*
-enum {
-	iKB_CHANEL1 = 1,
-	iKB_CHANEL2 = 2,
-	iKB_CHANEL3 = 3,
-	iKB_CHANEL4 = 4,
-	iKB_CHANEL5 = 5,
-	iKB_CHANEL6 = 6,
-	iKB_CHANEL7 = 7,
-	iKB_CHANEL8 = 8
-};
-*/
-
 extern I2CDev I2C1;
 
 class iKB_1 : public Device {

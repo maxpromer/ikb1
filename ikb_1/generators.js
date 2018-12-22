@@ -66,6 +66,11 @@ Blockly.JavaScript['ikb1_serial_available'] = function(block) {
 	return [code, Blockly.JavaScript.ORDER_NONE];
 };
 
+Blockly.JavaScript['ikb1_serial_read_one_byte'] = function(block) {
+	var code = ADDONS_IKB_1_CLASS_BEGIN + '.uart_read()';
+	return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
 Blockly.JavaScript['ikb1_serial_read'] = function(block) {
 	var value_count = Blockly.JavaScript.valueToCode(block, 'count', Blockly.JavaScript.ORDER_ATOMIC);
 	var code = ADDONS_IKB_1_CLASS_BEGIN + '.uart_read(' + value_count + ')';

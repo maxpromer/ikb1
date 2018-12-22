@@ -21,6 +21,7 @@ Blockly.Msg.IKB_1.SERIAL_WRITE_NEW_LINE = "serial ส่งข้อความ
 Blockly.Msg.IKB_1.SERIAL_AVAILABLE = "serial จำนวนข้อมูลที่รออ่าน";
 Blockly.Msg.IKB_1.SERIAL_READ = "serial อ่านข้อมูล";
 Blockly.Msg.IKB_1.BYTES = "ตัวอักษร";
+Blockly.Msg.IKB_1.SERIAL_READ_ONE_BYTE = "serial อ่านข้อมูล 1 ไบต์";
 Blockly.Msg.IKB_1.SERIAL_READ_STRING = "serial อ่านข้อความ";
 Blockly.Msg.IKB_1.SERIAL_READ_LINE = "serial อ่านข้อความ 1 บรรทัด";
 Blockly.Msg.IKB_1.SERIAL_READ_UNTIL = "serial อ่านข้อความ จนกระทั่งเจอ";

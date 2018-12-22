@@ -152,6 +152,18 @@ Blockly.Blocks['ikb1_serial_available'] = {
 	}
 };
 
+Blockly.Blocks['ikb1_serial_read_one_byte'] = {
+	init: function() {
+		this.appendDummyInput()
+			.appendField(Blockly.Msg.IKB_1.SERIAL_READ_ONE_BYTE);
+		this.setInputsInline(true);
+		this.setOutput(true, "Number");
+		this.setColour(180);
+		this.setTooltip("");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
+	}
+};
+
 Blockly.Blocks['ikb1_serial_read'] = {
 	init: function() {
 		this.appendValueInput("count")
