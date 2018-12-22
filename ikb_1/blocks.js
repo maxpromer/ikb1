@@ -145,7 +145,7 @@ Blockly.Blocks['ikb1_serial_available'] = {
 		this.appendDummyInput()
 			.appendField(Blockly.Msg.IKB_1.SERIAL_AVAILABLE);
 		this.setInputsInline(true);
-		this.setOutput(true, "Number");
+		this.setOutput(true, ["Number", "Boolean"]);
 		this.setColour(180);
 		this.setTooltip("");
 		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
@@ -166,3 +166,40 @@ Blockly.Blocks['ikb1_serial_read'] = {
 		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
 	}
 };
+
+Blockly.Blocks['ikb1_serial_read_string'] = {
+	init: function() {
+		this.appendDummyInput()
+			.appendField("serial read string");
+		this.setInputsInline(true);
+		this.setOutput(true, "String");
+		this.setColour(180);
+		this.setTooltip("");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
+	}
+};
+
+Blockly.Blocks['ikb1_serial_read_line'] = {
+	init: function() {
+		this.appendDummyInput()
+			.appendField("serial read line");
+		this.setInputsInline(true);
+		this.setOutput(true, "String");
+		this.setColour(180);
+		this.setTooltip("");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
+	}
+};
+
+Blockly.Blocks['ikb1_serial_read_until'] = {
+	init: function() {
+		this.appendDummyInput()
+			.appendField("serial read until")
+			.appendField(new Blockly.FieldTextInput("$"), "until");
+		this.setInputsInline(true);
+		this.setOutput(true, "String");
+		this.setColour(180);
+		this.setTooltip("");
+		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
+	}
+}

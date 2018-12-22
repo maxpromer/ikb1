@@ -116,9 +116,9 @@ class iKB_1 : public Device {
 		uint16_t uart_available() ;
 		char uart_read() ;
 		char* uart_read(uint8_t count) ;
-		char* uart_read_string();
-		char* uart_read_line();
-		char* uart_read_until(char until);
+		char* uart_read_string(uint32_t timeout = 1000) ;
+		char* uart_read_line(uint32_t timeout = 1000) ;
+		char* uart_read_until(char* until, uint32_t timeout = 1000) ;
 		
 };
 

@@ -71,3 +71,19 @@ Blockly.JavaScript['ikb1_serial_read'] = function(block) {
 	var code = ADDONS_IKB_1_CLASS_BEGIN + '.uart_read(' + value_count + ')';
 	return [code, Blockly.JavaScript.ORDER_NONE];
 };
+
+Blockly.JavaScript['ikb1_serial_read_string'] = function(block) {
+	var code = ADDONS_IKB_1_CLASS_BEGIN + '.uart_read_string()';
+	return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['ikb1_serial_read_line'] = function(block) {
+	var code = ADDONS_IKB_1_CLASS_BEGIN + '.uart_read_line()';
+	return [code, Blockly.JavaScript.ORDER_NONE];
+};
+
+Blockly.JavaScript['ikb1_serial_read_until'] = function(block) {
+	var text_until = block.getFieldValue('until');
+	var code = ADDONS_IKB_1_CLASS_BEGIN + '.uart_read_until("' + text_until + '")';
+	return [code, Blockly.JavaScript.ORDER_NONE];
+};

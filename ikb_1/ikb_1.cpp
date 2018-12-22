@@ -586,20 +586,82 @@ int iKB_1::uart_read_from_iKB_1(uint8_t count) {
 	return 0;
 }
 
-// Not supported
-char* iKB_1::uart_read_string() {
-	// not supported
-	return NULL;
+char* iKB_1::uart_read_string(uint32_t timeout) {
+	uint32_t wait_max_time = timeout;
+	uint32_t lastUpdate = esp_timer_get_time();
+	uint32_t nowTime;
+	
+	bool overflowBuffer = false;
+	uint16_t inxStr = 0;
+	memset(strBuffer, 0, sizeof strBuffer);
+	
+	while(1) {
+		nowTime = esp_timer_get_time();
+		if ((nowTime - lastUpdate) > (timeout * 1000)) {
+			break;
+		}
+		
+		if (overflowBuffer) {
+			break;
+		}
+		
+		uint16_t dataCount = uart_available();
+		while (dataCount--) {
+			if (inxStr > ((sizeof strBuffer) - 1)) {
+				overflowBuffer = true;
+				break;
+			}
+			strBuffer[inxStr++] = iKB_1_Data_Dequeue(&iKB_1_qSerailRead);
+			lastUpdate = esp_timer_get_time();
+		}
+	}
+	
+	return strBuffer;
 }
 
-char* iKB_1::uart_read_line() {
-	// not supported
-	return NULL;
+char* iKB_1::uart_read_line(uint32_t timeout) {
+	uart_read_until("\n", timeout);
+	
+	return strBuffer;
 }
 
-char* iKB_1::uart_read_until(char until) {
-	// not supported
-	return NULL;
+char* iKB_1::uart_read_until(char* until, uint32_t timeout) {
+	uint32_t wait_max_time = timeout;
+	uint32_t lastUpdate = esp_timer_get_time();
+	uint32_t nowTime;
+	
+	bool foundChar = false;
+	bool overflowBuffer = false;
+	uint16_t inxStr = 0;
+	memset(strBuffer, 0, sizeof strBuffer);
+	
+	while(1) {
+		nowTime = esp_timer_get_time();
+		if ((nowTime - lastUpdate) > (timeout * 1000)) {
+			break;
+		}
+		
+		if (overflowBuffer || foundChar) {
+			break;
+		}
+		
+		uint16_t dataCount = uart_available();
+		while (dataCount--) {
+			if (inxStr > ((sizeof strBuffer) - 1)) {
+				overflowBuffer = true;
+				break;
+			}
+			char c = iKB_1_Data_Dequeue(&iKB_1_qSerailRead);
+			if (c == until[0]) {
+				foundChar = true;
+				break;
+			}
+			strBuffer[inxStr++] = c;
+			lastUpdate = esp_timer_get_time();
+		}
+	}
+	
+	return strBuffer;
 }
 
 // Circle Queue
