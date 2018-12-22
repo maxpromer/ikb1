@@ -170,7 +170,7 @@ Blockly.Blocks['ikb1_serial_read'] = {
 Blockly.Blocks['ikb1_serial_read_string'] = {
 	init: function() {
 		this.appendDummyInput()
-			.appendField("serial read string");
+			.appendField(Blockly.Msg.IKB_1.SERIAL_READ_STRING);
 		this.setInputsInline(true);
 		this.setOutput(true, "String");
 		this.setColour(180);
@@ -182,7 +182,7 @@ Blockly.Blocks['ikb1_serial_read_string'] = {
 Blockly.Blocks['ikb1_serial_read_line'] = {
 	init: function() {
 		this.appendDummyInput()
-			.appendField("serial read line");
+			.appendField(Blockly.Msg.IKB_1.SERIAL_READ_LINE);
 		this.setInputsInline(true);
 		this.setOutput(true, "String");
 		this.setColour(180);
@@ -194,7 +194,7 @@ Blockly.Blocks['ikb1_serial_read_line'] = {
 Blockly.Blocks['ikb1_serial_read_until'] = {
 	init: function() {
 		this.appendDummyInput()
-			.appendField("serial read until")
+			.appendField(Blockly.Msg.IKB_1.SERIAL_READ_UNTIL)
 			.appendField(new Blockly.FieldTextInput("$"), "until");
 		this.setInputsInline(true);
 		this.setOutput(true, "String");
