@@ -20,7 +20,7 @@
 
 ### ติดตั้งจาก Source code
 
-Clone โค้ดต้นฉบับได้ที่ https://github.com/maxpromer/ikb_1_plugin จะได้โฟลเดอร์ ikb_1_plugin-master ให้แก้ชื่อเป็น ikb_1_plugin แล้วย้ายไปไว้ในโฟลเดอร์ `<ไดร์ที่ติดตั้ง Windows>\Users\<Username>\AppData\Local\KidBright\app-1.0.0\resources\app\kbide\plugins` เมื่อเปิดโปรแกรม KidBrightIDE บล็อกจะอยู่ใน ปลั๊กอิน > iKB-1
+Clone โค้ดต้นฉบับได้ที่ https://github.com/inexglobal/ikb_1_plugin จะได้โฟลเดอร์ ikb_1_plugin-master ให้แก้ชื่อเป็น ikb_1_plugin แล้วย้ายไปไว้ในโฟลเดอร์ `<ไดร์ที่ติดตั้ง Windows>\Users\<Username>\AppData\Local\KidBright\app-1.0.0\resources\app\kbide\plugins` เมื่อเปิดโปรแกรม KidBrightIDE บล็อกจะอยู่ใน ปลั๊กอิน > iKB-1
 
 ## การใช้งาน
 
