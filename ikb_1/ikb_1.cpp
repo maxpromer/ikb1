@@ -155,6 +155,9 @@ bool iKB_1::send(uint8_t command, uint8_t parameter, int request_length) {
 	i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_WRITE, true);
 	i2c_master_write_byte(cmd, command, true);
 	i2c_master_write_byte(cmd, parameter, true);
+	
+	i2c_master_start(cmd);
+	i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_READ, true);
 	if (request_length > 1) {
         i2c_master_read(cmd, read_data, request_length - 1, I2C_MASTER_ACK);
     }
@@ -172,6 +175,9 @@ bool iKB_1::send(uint8_t command, int request_length) {
 	i2c_master_start(cmd);
 	i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_WRITE, true);
 	i2c_master_write_byte(cmd, command, true);
+	
+	i2c_master_start(cmd);
+	i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_READ, true);
 	if (request_length > 1) {
         i2c_master_read(cmd, read_data, request_length - 1, I2C_MASTER_ACK);
     }
@@ -214,7 +220,7 @@ int iKB_1::analog_read(uint8_t ch) {
 	}
 	
 	if (!send(0x80 + (ch << 4), (int)2)) {
-		return false;
+		return 0;
 	}
 	
 	return (read_data[0]<<8)|read_data[1];
