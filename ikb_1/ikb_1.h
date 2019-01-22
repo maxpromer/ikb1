@@ -24,32 +24,8 @@ class iKB_1 : public Device {
 			s_error
 		} state;
 		TickType_t tickcnt, polling_tickcnt;
-		
-		struct {
-			struct {
-				union {
-					uint8_t block[65]; // 1 byte command + 64 bytes parameters
-					struct {
-						uint8_t command;
-						uint8_t parameter;
-					};
-				} data;
-				int length; // Data length for write
-			} write;
-			
-			struct {
-				union {
-					uint8_t block[64]; // Max 64 byte for read buffer
-					/*
-					struct {
-					} byte;
-					*/
-				} data;
-				int length; // Data length for request
-			} read;
-			
-			bool old;
-		} dataBuffer;
+
+		uint8_t read_data[64]; // Max 64 byte for read buffer
 		
 		uint8_t errCount = 0;
 		
@@ -59,10 +35,8 @@ class iKB_1 : public Device {
 		
 		// method
 		void i2c_setClock(uint32_t clock) ;
-		bool sync_data(uint16_t wait_time = 1000) ;
 		bool send(uint8_t command) ;
 		bool send(uint8_t command, uint8_t parameter) ;
-		bool sendQ(uint8_t command, uint8_t parameter) ;
 		bool send(uint8_t command, uint8_t parameter, int request_length) ;
 		bool send(uint8_t command, int request_length) ;
 		int uart_read_from_iKB_1(uint8_t count) ;
@@ -82,7 +56,7 @@ class iKB_1 : public Device {
 		bool prop_write(int index, char *value);
 		
 		// method
-		bool reset(bool sync) ;
+		bool reset() ;
 		uint8_t digital_read(uint8_t ch, bool pullup = false) ;
 		bool digital_write(uint8_t ch, uint8_t value) ;
 		int analog_read(uint8_t ch) ;
@@ -108,28 +82,6 @@ class iKB_1 : public Device {
 		char* uart_read_until(char* until, uint32_t timeout = 1000) ;
 		
 };
-
-// 
-typedef struct {
-	uint8_t command;
-	uint8_t parameter;
-} iKB_1_CommandData;
-
-// Circle Queue
-#define iKB_1_BUFFER_SIZE 20
-
-typedef struct {
-	int count;
-	int rear;
-	int front;
-	iKB_1_CommandData data[iKB_1_BUFFER_SIZE];
-} iKB_1_Queue;
-
-static iKB_1_Queue iKB_1_qWrite;
-
-void iKB_1_Enqueue(iKB_1_Queue *q, iKB_1_CommandData data) ;
-iKB_1_CommandData iKB_1_Dequeue(iKB_1_Queue *q) ;
-
 
 // Circle Queue 2
 #define iKB_1_DATA_BUFFER_SIZE 256

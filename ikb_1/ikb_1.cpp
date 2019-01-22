@@ -19,14 +19,6 @@ void iKB_1::init(void) {
 	// Set clock
 	i2c_setClock(IKB_1_I2C_CLOCK);
 	
-	// Set buffer to old data
-	dataBuffer.old = true;
-	
-	// clear queue
-	iKB_1_qWrite.front = -1;
-	iKB_1_qWrite.rear  = -1;
-	iKB_1_qWrite.count = 0;
-	
 	// clear queue (2)
 	iKB_1_qSerailRead.front = -1;
 	iKB_1_qSerailRead.rear  = -1;
@@ -78,7 +70,7 @@ void iKB_1::process(Driver *drv) {
 				initialized = true;
 				
 				// Send reset module
-				reset(false); // No sync !
+				reset();
 				
 				// Go to main state
 				state = s_runing;
@@ -88,75 +80,7 @@ void iKB_1::process(Driver *drv) {
 			break;
 		
 		case s_runing: {
-			/*
-			char str[20];
-			sprintf(str, "C: %d\n", iKB_1_qWrite.count);
-			uart_write_bytes(UART_NUM_0, str, strlen(str));
-			*/
-			uint8_t dataBlock[2];
-			while(iKB_1_qWrite.count) { // loop all data in queue
-				iKB_1_CommandData data = iKB_1_Dequeue(&iKB_1_qWrite);
-				dataBlock[0] = data.command;
-				dataBlock[1] = data.parameter;
-				if (i2c->write(channel, address, dataBlock, 2) != ESP_OK) {
-					errCount++;
-					if (errCount > 10) {
-						errCount = 0;
-						state = s_error;
-					}
-					break;
-				}
-			}
-			if (state == s_error) {
-				break;
-			}
-		
-			if (dataBuffer.old) { // if old data
-				break; // not do things
-			}
-			
-			// if new data
-			if (i2c->write(channel, address, dataBuffer.write.data.block, dataBuffer.write.length) != ESP_OK) {
-				errCount++;
-				if (errCount > 10) {
-					errCount = 0;
-					state = s_error;
-				}
-				break;
-			}
-			
-			if (dataBuffer.read.length <= 0) { // if not request data
-				dataBuffer.old = true;
-				break;  // not do more
-			}
-			
-			// vTaskDelay(10 / portTICK_RATE_MS);
-			
-			// If a lot of data, Change speed of i2c
-			bool i2cSpeedChange = dataBuffer.read.length > 3;
-			if (i2cSpeedChange) {
-				i2c_setClock(10E3); // Set to 10kHz
-			}
-			
-			// Send request data
-			uint8_t *pointer = 0;
-			if (i2c->read(channel, address, pointer, 0, dataBuffer.read.data.block, dataBuffer.read.length) != ESP_OK) {
-				errCount++;
-				if (errCount > 10) {
-					errCount = 0;
-					state = s_error;
-				}
-				break;
-			}
-			
-			// Set speed to default
-			if (i2cSpeedChange) {
-				i2c_setClock(IKB_1_I2C_CLOCK);
-			}
-			
-			// Set it to old data
-			dataBuffer.old = true;
-			
+
 		}
 		
 		case s_wait:
@@ -197,95 +121,70 @@ void iKB_1::i2c_setClock(uint32_t clock) {
 	i2c_param_config(I2C_NUM_1, &conf);
 }
 
-// Wait send data finish
-bool iKB_1::sync_data(uint16_t wait_time) {
-	uint16_t waiting_time = 0;
-	while((!dataBuffer.old) && (waiting_time < wait_time)) { // loop if old flag not set and time for wait not more than 1s
-		vTaskDelay(50 / portTICK_RATE_MS);
-		waiting_time += 50;
-	} 
-	return waiting_time < wait_time;
-}
-
 // Send only, no parameter, no request
 bool iKB_1::send(uint8_t command) {
-	if (!sync_data()) {
-		return false;
-	}
+	i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+	i2c_master_start(cmd);
+	i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_WRITE, true);
+	i2c_master_write_byte(cmd, command, true);
+	i2c_master_stop(cmd);
+	esp_err_t ret = i2c_master_cmd_begin(I2C_NUM_1, cmd, 1000 / portTICK_RATE_MS);
+	i2c_cmd_link_delete(cmd);
 	
-	dataBuffer.write.data.command = command;
-	dataBuffer.write.length = 1;
-	dataBuffer.read.length = 0; // no request
-	
-	dataBuffer.old = false;
-	
-	return true;
+	return ret == ESP_OK;
 }
 
 // Send command and parameter, no request
 bool iKB_1::send(uint8_t command, uint8_t parameter) {
-	if (!sync_data()) {
-		return false;
-	}
+	i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+	i2c_master_start(cmd);
+	i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_WRITE, true);
+	i2c_master_write_byte(cmd, command, true);
+	i2c_master_write_byte(cmd, parameter, true);
+	i2c_master_stop(cmd);
+	esp_err_t ret = i2c_master_cmd_begin(I2C_NUM_1, cmd, 1000 / portTICK_RATE_MS);
+	i2c_cmd_link_delete(cmd);
 	
-	dataBuffer.write.data.command = command;
-	dataBuffer.write.data.parameter = parameter;
-	dataBuffer.write.length = 2;
-	dataBuffer.read.length = 0; // no request
-	
-	dataBuffer.old = false;
-	
-	return true;
-}
-
-// Send command and parameter into circle queue
-bool iKB_1::sendQ(uint8_t command, uint8_t parameter) {
-	iKB_1_CommandData writeData;
-
-	writeData.command = command;
-	writeData.parameter = parameter;
-	iKB_1_Enqueue(&iKB_1_qWrite, writeData);
-	
-	return true;
+	return ret == ESP_OK;
 }
 
 // Send command and parameter and request
 bool iKB_1::send(uint8_t command, uint8_t parameter, int request_length) {
-	if (!sync_data()) {
-		return false;
-	}
+	i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+	i2c_master_start(cmd);
+	i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_WRITE, true);
+	i2c_master_write_byte(cmd, command, true);
+	i2c_master_write_byte(cmd, parameter, true);
+	if (request_length > 1) {
+        i2c_master_read(cmd, read_data, request_length - 1, I2C_MASTER_ACK);
+    }
+	i2c_master_read_byte(cmd, read_data + request_length - 1, I2C_MASTER_LAST_NACK);
+	i2c_master_stop(cmd);
+	esp_err_t ret = i2c_master_cmd_begin(I2C_NUM_1, cmd, 1000 / portTICK_RATE_MS);
+	i2c_cmd_link_delete(cmd);
 	
-	dataBuffer.write.data.command = command;
-	dataBuffer.write.data.parameter = parameter;
-	dataBuffer.write.length = 2;
-	dataBuffer.read.length = request_length;
-	
-	dataBuffer.old = false;
-	
-	return true;
+	return ret == ESP_OK;
 }
 
 // Send command and request, no parameter 
 bool iKB_1::send(uint8_t command, int request_length) {
-	if (!sync_data()) {
-		return false;
-	}
+	i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+	i2c_master_start(cmd);
+	i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_WRITE, true);
+	i2c_master_write_byte(cmd, command, true);
+	if (request_length > 1) {
+        i2c_master_read(cmd, read_data, request_length - 1, I2C_MASTER_ACK);
+    }
+	i2c_master_read_byte(cmd, read_data + request_length - 1, I2C_MASTER_LAST_NACK);
+	i2c_master_stop(cmd);
+	esp_err_t ret = i2c_master_cmd_begin(I2C_NUM_1, cmd, 1000 / portTICK_RATE_MS);
+	i2c_cmd_link_delete(cmd);
 	
-	dataBuffer.write.data.command = command;
-	dataBuffer.write.length = 1;
-	dataBuffer.read.length = request_length;
-	
-	dataBuffer.old = false;
-	
-	return true;
+	return ret == ESP_OK;
 }
 
-bool iKB_1::reset(bool sync = false) {
-	if (!send((uint8_t)0x0)) {
-		return false;
-	}
-	
-	return sync ? sync_data() : true;
+bool iKB_1::reset() {
+	return send((uint8_t)0x0);
 }
 
 uint8_t iKB_1::digital_read(uint8_t ch, bool pullup) {
@@ -298,31 +197,18 @@ uint8_t iKB_1::digital_read(uint8_t ch, bool pullup) {
 		return 0;
 	}
 	
-	if (sync_data()) {
-		return dataBuffer.read.data.block[0] != 0;
-	} else {
-		return 0;
-	}
+	return read_data[0] != 0;
 }
 
 bool iKB_1::digital_write(uint8_t ch, uint8_t value) {
-	// if (ch < 0 || ch > 7) { // warning: comparison is always false due to limited range of data type
 	if (ch > 7) {
 		return false;
 	}
-	
-	/*
-	send(0x08 + ch, (uint8_t)(value != 0 ? 1 : 0));
-	
-	return sync_data();
-	*/
-	
-	sendQ(0x08 + ch, (uint8_t)(value != 0 ? 1 : 0));
-	return true;
+
+	return send(0x08 + ch, (uint8_t)(value != 0 ? 1 : 0));
 }
 
 int iKB_1::analog_read(uint8_t ch) {
-	// if (ch < 0 || ch > 7) { // warning: comparison is always false due to limited range of data type
 	if (ch > 7) {
 		return 0;
 	}
@@ -331,11 +217,7 @@ int iKB_1::analog_read(uint8_t ch) {
 		return false;
 	}
 	
-	if (sync_data()) {
-		return (dataBuffer.read.data.block[0]<<8)|dataBuffer.read.data.block[1];
-	} else {
-		return 0;
-	}
+	return (read_data[0]<<8)|read_data[1];
 }
 
 bool iKB_1::motor(uint8_t ch, uint8_t dir, uint8_t speed) {
@@ -359,30 +241,16 @@ bool iKB_1::motor(uint8_t ch, uint8_t dir, uint8_t speed) {
 			speed_t = 0;
 
 	}
-	
-	/*
-	send(0x20 | (1 << (ch - 1)), (uint8_t)speed_t);
-	
-	return sync_data();
-	*/
-	
-	sendQ(0x20 | (1 << (ch - 1)), (uint8_t)speed_t);
-	return true;
+
+	return send(0x20 | (1 << (ch - 1)), (uint8_t)speed_t);
 }
 
 bool iKB_1::servo(uint8_t ch, uint8_t angle) {
 	if (ch < 1 || ch > 6) {
 		return false;
 	}
-	
-	/*
-	send(0x40 | (1 << (ch - 1)), (uint8_t)angle);
-	
-	return sync_data();
-	*/
-	
-	sendQ(0x40 | (1 << (ch - 1)), (uint8_t)angle);
-	return true;
+
+	return send(0x40 | (1 << (ch - 1)), (uint8_t)angle);
 }
 
 bool iKB_1::servo2(uint8_t ch, uint8_t dir, uint8_t speed) {
@@ -427,10 +295,6 @@ bool iKB_1::uart_write(double data) {
 }
 
 bool iKB_1::uart_write(const char* data) {
-	if (!sync_data()) {
-		return false;
-	}
-	
 	uint8_t baudToBit;
 	if (uartBaud == 2400) {
 		baudToBit = 0b00;
@@ -446,15 +310,17 @@ bool iKB_1::uart_write(const char* data) {
 	
 	int len = strlen(data);
 	len = fmin(len, 64); // Limit 64 bytes
+
+	i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+	i2c_master_start(cmd);
+	i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_WRITE, true);
+	i2c_master_write_byte(cmd, 0x04 | baudToBit, true);
+	i2c_master_write(cmd, (uint8_t*)data, len, true);
+	i2c_master_stop(cmd);
+	esp_err_t ret = i2c_master_cmd_begin(I2C_NUM_1, cmd, 1000 / portTICK_RATE_MS);
+	i2c_cmd_link_delete(cmd);
 	
-	dataBuffer.write.data.command = 0x04 | baudToBit;
-	memcpy(&dataBuffer.write.data.block[1], data, len);
-	dataBuffer.write.length = len + 1; // User data length + 1 byte command
-	dataBuffer.read.length = 0;
-	
-	dataBuffer.old = false;
-	
-	return sync_data();
+	return ret == ESP_OK;
 }
 
 bool iKB_1::uart_write_line(char data) {
@@ -494,40 +360,30 @@ uint16_t iKB_1::uart_available() {
 		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
 		#endif
 	}
-		
-	if (sync_data()) {
-		newDataIniKB_1 = dataBuffer.read.data.block[0];
+
+	newDataIniKB_1 = read_data[0];
+			
+	#ifdef IKB_1_DEBUG
+	char bufferHere[20];
+	sprintf(bufferHere, "Data new (iKB-1): %d\n", newDataIniKB_1);
+	uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
+	#endif
+			
+	while(newDataIniKB_1 > 0) {
+		readCount = uart_read_from_iKB_1(newDataIniKB_1);
 			
 		#ifdef IKB_1_DEBUG
 		char bufferHere[20];
-		sprintf(bufferHere, "Data new (iKB-1): %d\n", newDataIniKB_1);
+		sprintf(bufferHere, "Read: %d\n", readCount);
 		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
 		#endif
 			
-		while(newDataIniKB_1 > 0) {
-			readCount = uart_read_from_iKB_1(newDataIniKB_1);
-			
-			#ifdef IKB_1_DEBUG
-			char bufferHere[20];
-			sprintf(bufferHere, "Read: %d\n", readCount);
-			uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
-			#endif
-			
-			if (readCount > 0) {
-				for (int inx=0;inx<readCount;inx++) {
-					iKB_1_Data_Enqueue(&iKB_1_qSerailRead, dataBuffer.read.data.block[inx]);
-				}
+		if (readCount > 0) {
+			for (int inx=0;inx<readCount;inx++) {
+				iKB_1_Data_Enqueue(&iKB_1_qSerailRead, read_data[inx]);
 			}
-			newDataIniKB_1 = newDataIniKB_1 - readCount;
 		}
-	} else { // some error !
-		#ifdef IKB_1_DEBUG
-		char bufferHere[20];
-		sprintf(bufferHere, "Some Error !\n");
-		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
-		#endif
-			
-		newDataIniKB_1 = 0;
+		newDataIniKB_1 = newDataIniKB_1 - readCount;
 	}
 	
 	return iKB_1_qSerailRead.count;
@@ -568,22 +424,18 @@ int iKB_1::uart_read_from_iKB_1(uint8_t count) {
 	// count = fmin(count, 63); // 63 bytes for character and 1 byte for end of string (\0)
 	count = fmin(count, 30); // limit 30 bytes per round
 	
-	memset(dataBuffer.read.data.block, 0, sizeof dataBuffer.read.data.block);
+	memset(read_data, 0, sizeof read_data);
 	if (!send(0x02, count, count)) {
 		return 0;
 	}
 	
-	if (sync_data(count * 300)) {
-		#ifdef IKB_1_DEBUG
-		char bufferHere[80];
-		sprintf(bufferHere, "Data Read From iKB-1: %s\n", dataBuffer.read.data.block);
-		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
-		#endif
+	#ifdef IKB_1_DEBUG
+	char bufferHere[80];
+	sprintf(bufferHere, "Data Read From iKB-1: %s\n", dataBuffer.read.data.block);
+	uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
+	#endif
 		
-		return count;
-	}
-	
-	return 0;
+	return count;
 }
 
 char* iKB_1::uart_read_string(uint32_t timeout) {
@@ -662,35 +514,6 @@ char* iKB_1::uart_read_until(char* until, uint32_t timeout) {
 	}
 	
 	return strBuffer;
-}
-
-// Circle Queue
-void iKB_1_Enqueue(iKB_1_Queue *q, iKB_1_CommandData data) {
-	if (q->count == iKB_1_BUFFER_SIZE) return;
-
-	q->rear = q->rear == iKB_1_BUFFER_SIZE ? 0 : q->rear + 1;
-	q->data[q->rear] = data;
-	q->count++;
-	
-	if (q->front == -1) q->front = 0;
-}
-
-iKB_1_CommandData iKB_1_Dequeue(iKB_1_Queue *q) {
-	iKB_1_CommandData data;
-	
-	if (q->count == 0 || q->front == -1) return data;
-
-	data = q->data[q->front];
-	q->front++;
-	if (q->front == iKB_1_BUFFER_SIZE) q->front = 0;
-	q->count--;
-	
-	if (q->count == 0) {
-		q->front = -1;
-		q->rear  = -1;
-	}
-	
-	return data;
 }
 
 // Circle Queue (2)
