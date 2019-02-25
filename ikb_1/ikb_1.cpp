@@ -45,7 +45,7 @@ void iKB_1::init(void) {
 	);
 	
 	uartReadQueue = xQueueCreate(
-		100, 
+		256, 
 		sizeof(uint8_t)
 	);
 	
