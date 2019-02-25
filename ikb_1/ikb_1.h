@@ -32,12 +32,10 @@ class iKB_1 : public Device {
 		uint8_t errCount = 0;
 		
 		unsigned long uartBaud = 9600;
+		uint8_t baudToBit = 0b01;
 		
 		char strBuffer[257];
-		
-		// Uart write
-		QueueHandle_t uartWriteQueue = NULL;
-		
+
 		// Uart read
 		QueueHandle_t uartReadQueue = NULL;
 		
@@ -47,8 +45,6 @@ class iKB_1 : public Device {
 		bool send(uint8_t command, uint8_t parameter) ;
 		bool send(uint8_t command, uint8_t parameter, int request_length) ;
 		bool send(uint8_t command, int request_length) ;
-		bool uart_write_to_iKB_1() ;
-		
 		int uart_read_from_iKB_1(uint8_t count) ;
 
 	public:
