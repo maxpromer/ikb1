@@ -13,16 +13,44 @@ void iKB_1::init(void) {
 	// clear initialized flag
 	initialized = false;
 	
-	// Start initialized
-	state = s_detect;
+	// Debug
+	esp_log_level_set("*", ESP_LOG_INFO);
+	
+	// Set new timeout of i2c
+	i2c_set_timeout(I2C_NUM_1, 40000);
 	
 	// Set clock
-	i2c_setClock(IKB_1_I2C_CLOCK);
+	// i2c_setClock(IKB_1_I2C_CLOCK);
+
+	// Create static queue
+	/*
+	uartWriteQueue = xQueueCreateStatic(
+		100, 
+		sizeof(uint8_t), 
+		queueUartWriteStorageArea, 
+		xStaticQueueUartWrite
+	);
 	
-	// clear queue (2)
-	iKB_1_qSerailRead.front = -1;
-	iKB_1_qSerailRead.rear  = -1;
-	iKB_1_qSerailRead.count = 0;
+	uartReadQueue = xQueueCreateStatic(
+		100, 
+		sizeof(uint8_t), 
+		queueUartReadStorageArea, 
+		xStaticQueueUartRead
+	);
+	*/
+	
+	uartWriteQueue = xQueueCreate(
+		100, 
+		sizeof(uint8_t)
+	);
+	
+	uartReadQueue = xQueueCreate(
+		100, 
+		sizeof(uint8_t)
+	);
+	
+	// Start initialized
+	state = s_detect;
 }
 
 int iKB_1::prop_count(void) {
@@ -285,12 +313,16 @@ bool iKB_1::uart_config(unsigned long baud) {
 }
 
 bool iKB_1::uart_write(char data) {
-	char dataStr[] = { data, 0 };
-	return uart_write(dataStr);
+	xQueueSendToBack(uartWriteQueue, &data, 0);
+	
+	return uart_write_to_iKB_1();
 }
 
 bool iKB_1::uart_write(bool data) {
-	return uart_write((char)('0' + (data ? 1 : 0)));
+	uint8_t dataWrite = '0' + (data ? 1 : 0);
+	xQueueSendToBack(uartWriteQueue, &dataWrite, 0);
+	
+	return uart_write_to_iKB_1();
 }
 
 bool iKB_1::uart_write(double data) {
@@ -301,6 +333,16 @@ bool iKB_1::uart_write(double data) {
 }
 
 bool iKB_1::uart_write(const char* data) {
+	int inx=0;
+	while(data[inx] != 0) {
+		xQueueSendToBack(uartWriteQueue, &data[inx], 0);
+		inx++;
+	}
+	
+	return uart_write_to_iKB_1();
+}
+
+bool iKB_1::uart_write_to_iKB_1() {
 	uint8_t baudToBit;
 	if (uartBaud == 2400) {
 		baudToBit = 0b00;
@@ -314,14 +356,15 @@ bool iKB_1::uart_write(const char* data) {
 		return false;
 	}
 	
-	int len = strlen(data);
-	len = fmin(len, 64); // Limit 64 bytes
-
 	i2c_cmd_handle_t cmd = i2c_cmd_link_create();
 	i2c_master_start(cmd);
 	i2c_master_write_byte(cmd, (address << 1) | I2C_MASTER_WRITE, true);
 	i2c_master_write_byte(cmd, 0x04 | baudToBit, true);
-	i2c_master_write(cmd, (uint8_t*)data, len, true);
+	uint8_t data;
+	for (int count=0;count<uxQueueMessagesWaiting(uartWriteQueue);count++) {
+		xQueueReceive(uartWriteQueue, &data, 10);
+		i2c_master_write_byte(cmd, data, true);
+	}
 	i2c_master_stop(cmd);
 	esp_err_t ret = i2c_master_cmd_begin(I2C_NUM_1, cmd, 1000 / portTICK_RATE_MS);
 	i2c_cmd_link_delete(cmd);
@@ -346,13 +389,15 @@ bool iKB_1::uart_write_line(double data) {
 }
 
 bool iKB_1::uart_write_line(const char* data) {
-	int data_length = strlen(data);
-	char strBuffer[data_length + 2]; // 1 byte for new line (\n) and 1 byte for end of string
-	memcpy(strBuffer, data, data_length);
-	strBuffer[data_length] = '\n'; // new line
-	strBuffer[data_length + 1] = 0; // end of string
+	int inx=0;
+	while(data[inx] != 0) {
+		xQueueSendToBack(uartWriteQueue, &data[inx], 0);
+		inx++;
+	}
+	uint8_t dataAdd = '\n';
+	xQueueSendToBack(uartWriteQueue, &dataAdd, 0);
 	
-	return uart_write(strBuffer);
+	return uart_write_to_iKB_1();
 }
 
 uint16_t iKB_1::uart_available() {
@@ -360,86 +405,58 @@ uint16_t iKB_1::uart_available() {
 	uint8_t readCount = 0;
 	
 	if (!send(0x01, (int)1)) {
-		#ifdef IKB_1_DEBUG
-		char bufferHere[40];
-		sprintf(bufferHere, "Read serial available fail");
-		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
-		#endif
+		ESP_LOGI("iKB-1", "Read serial available fail");
 	}
 
 	newDataIniKB_1 = read_data[0];
-			
-	#ifdef IKB_1_DEBUG
-	char bufferHere[20];
-	sprintf(bufferHere, "Data new (iKB-1): %d\n", newDataIniKB_1);
-	uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
-	#endif
-			
+	ESP_LOGI("iKB-1", "Data new (iKB-1): %d", newDataIniKB_1);
+
 	while(newDataIniKB_1 > 0) {
 		readCount = uart_read_from_iKB_1(newDataIniKB_1);
-			
-		#ifdef IKB_1_DEBUG
-		char bufferHere[20];
-		sprintf(bufferHere, "Read: %d\n", readCount);
-		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
-		#endif
-			
+		
+		ESP_LOGI("iKB-1", "Read: %d\n", readCount);
+		
 		if (readCount > 0) {
 			for (int inx=0;inx<readCount;inx++) {
-				iKB_1_Data_Enqueue(&iKB_1_qSerailRead, read_data[inx]);
+				xQueueSendToBack(uartReadQueue, &read_data[inx], 0);
 			}
 		}
 		newDataIniKB_1 = newDataIniKB_1 - readCount;
 	}
 	
-	return iKB_1_qSerailRead.count;
+	return uxQueueMessagesWaiting(uartReadQueue);
 }
 
 char iKB_1::uart_read() {
-	// return uart_read(1)[0];
-	return iKB_1_Data_Dequeue(&iKB_1_qSerailRead);
+	xQueueReceive(uartReadQueue, &strBuffer[0], 10);
+	
+	return strBuffer[0];
 }
 
 char* iKB_1::uart_read(uint8_t count) {
 	count = fmin(count, 256);
-	count = fmin(iKB_1_qSerailRead.count, count);
+	count = fmin(uxQueueMessagesWaiting(uartReadQueue), count);
 	
 	memset(strBuffer, 0, sizeof strBuffer);
 	for (int inx=0;inx<count;inx++) {
-		strBuffer[inx] = uart_read();
-		
-		#ifdef IKB_1_DEBUG
-		/*
-		char bufferHere[10];
-		sprintf(bufferHere, "C: %c\n", strBuffer[inx]);
-		uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
-		*/
-		#endif
+		xQueueReceive(uartReadQueue, &strBuffer[inx], 10);
 	}
-	
-	#ifdef IKB_1_DEBUG
-	char bufferHere[80];
-	sprintf(bufferHere, "Data Read (%d): %s\n", count, strBuffer);
-	uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
-	#endif
+
+	ESP_LOGI("iKB-1", "Data Read (%d): %s\n", count, strBuffer);
 	
 	return strBuffer;
 }
 
 int iKB_1::uart_read_from_iKB_1(uint8_t count) {
-	// count = fmin(count, 63); // 63 bytes for character and 1 byte for end of string (\0)
-	count = fmin(count, 30); // limit 30 bytes per round
+	count = fmin(count, 63); // 63 bytes for character and 1 byte for end of string (\0)
+	// count = fmin(count, 30); // limit 30 bytes per round
 	
 	memset(read_data, 0, sizeof read_data);
 	if (!send(0x02, count, count)) {
 		return 0;
 	}
 	
-	#ifdef IKB_1_DEBUG
-	char bufferHere[80];
-	sprintf(bufferHere, "Data Read From iKB-1: %s\n", dataBuffer.read.data.block);
-	uart_write_bytes(UART_NUM_0, bufferHere, strlen(bufferHere));
-	#endif
+	// ESP_LOGI("iKB-1", "Data Read From iKB-1: %s\n", dataBuffer.read.data.block);
 		
 	return count;
 }
@@ -469,9 +486,11 @@ char* iKB_1::uart_read_string(uint32_t timeout) {
 				overflowBuffer = true;
 				break;
 			}
-			strBuffer[inxStr++] = iKB_1_Data_Dequeue(&iKB_1_qSerailRead);
+			xQueueReceive(uartReadQueue, &strBuffer[inxStr++], 0);
 			lastUpdate = esp_timer_get_time();
 		}
+		
+		vTaskDelay(1 / portTICK_RATE_MS);
 	}
 	
 	return strBuffer;
@@ -509,7 +528,8 @@ char* iKB_1::uart_read_until(char* until, uint32_t timeout) {
 				overflowBuffer = true;
 				break;
 			}
-			char c = iKB_1_Data_Dequeue(&iKB_1_qSerailRead);
+			char c;
+			xQueueReceive(uartReadQueue, &c, 0);
 			if (c == until[0]) {
 				foundChar = true;
 				break;
@@ -517,41 +537,11 @@ char* iKB_1::uart_read_until(char* until, uint32_t timeout) {
 			strBuffer[inxStr++] = c;
 			lastUpdate = esp_timer_get_time();
 		}
+		
+		vTaskDelay(1 / portTICK_RATE_MS);
 	}
 	
 	return strBuffer;
-}
-
-// Circle Queue (2)
-void iKB_1_Data_Enqueue(iKB_1_DataQueue *q, uint8_t data) {
-	if (q->count == iKB_1_DATA_BUFFER_SIZE) { // if queue is full
-		if (iKB_1_DATA_QUEUE_ROLL) {
-			iKB_1_Data_Dequeue(q);
-		}
-		return;
-	}
-	
-	q->rear = q->rear == iKB_1_DATA_BUFFER_SIZE ? 0 : q->rear + 1;
-	q->data[q->rear] = data;
-	q->count++;
-	
-	if (q->front == -1) q->front = 0;
-}
-
-uint8_t iKB_1_Data_Dequeue(iKB_1_DataQueue *q) {
-	if (q->count == 0 || q->front == -1) return 0;
-
-	uint8_t data = q->data[q->front];
-	q->front++;
-	if (q->front == iKB_1_DATA_BUFFER_SIZE) q->front = 0;
-	q->count--;
-	
-	if (q->count == 0) {
-		q->front = -1;
-		q->rear  = -1;
-	}
-	
-	return data;
 }
 
 #endif

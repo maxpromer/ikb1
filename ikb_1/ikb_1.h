@@ -3,6 +3,10 @@
 
 #include <math.h>
 #include <string.h>
+#include "esp_log.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/queue.h"
 
 #include "driver.h"
 #include "device.h"
@@ -11,9 +15,7 @@
 #include "kidbright32.h"
 
 // #define IKB_1_DEBUG
-#define IKB_1_I2C_CLOCK 100E3
-
-extern I2CDev I2C1;
+// #define IKB_1_I2C_CLOCK 100E3
 
 class iKB_1 : public Device {
 	private:		
@@ -33,12 +35,20 @@ class iKB_1 : public Device {
 		
 		char strBuffer[257];
 		
+		// Uart write
+		QueueHandle_t uartWriteQueue = NULL;
+		
+		// Uart read
+		QueueHandle_t uartReadQueue = NULL;
+		
 		// method
 		void i2c_setClock(uint32_t clock) ;
 		bool send(uint8_t command) ;
 		bool send(uint8_t command, uint8_t parameter) ;
 		bool send(uint8_t command, uint8_t parameter, int request_length) ;
 		bool send(uint8_t command, int request_length) ;
+		bool uart_write_to_iKB_1() ;
+		
 		int uart_read_from_iKB_1(uint8_t count) ;
 
 	public:
@@ -82,21 +92,5 @@ class iKB_1 : public Device {
 		char* uart_read_until(char* until, uint32_t timeout = 1000) ;
 		
 };
-
-// Circle Queue 2
-#define iKB_1_DATA_BUFFER_SIZE 256
-#define iKB_1_DATA_QUEUE_ROLL 1
-
-typedef struct {
-	int count;
-	int rear;
-	int front;
-	uint8_t data[iKB_1_DATA_BUFFER_SIZE];
-} iKB_1_DataQueue;
-
-static iKB_1_DataQueue iKB_1_qSerailRead;
-
-void iKB_1_Data_Enqueue(iKB_1_DataQueue *q, uint8_t data) ;
-uint8_t iKB_1_Data_Dequeue(iKB_1_DataQueue *q) ;
 
 #endif
