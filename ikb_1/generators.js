@@ -92,3 +92,77 @@ Blockly.JavaScript['ikb1_serial_read_until'] = function(block) {
 	var code = ADDONS_IKB_1_CLASS_BEGIN + '.uart_read_until("' + text_until + '", 100)';
 	return [code, Blockly.JavaScript.ORDER_NONE];
 };
+
+Blockly.JavaScript['ikb1_motor_forward'] = function(block) {
+	var value_speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+	var code = '';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(1, 1, ' + value_speed + ');\t';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(2, 1, ' + value_speed + ');\n';
+	return code;
+};
+
+Blockly.JavaScript['ikb1_motor_backward'] = function(block) {
+	var value_speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+	var code = '';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(1, 2, ' + value_speed + ');\t';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(2, 2, ' + value_speed + ');\n';
+	return code;
+};
+
+Blockly.JavaScript['ikb1_motor_turn_left'] = function(block) {
+	var value_speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+	var code = '';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(1, 1, 0);\t';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(2, 1, ' + value_speed + ');\n';
+	return code;
+};
+
+Blockly.JavaScript['ikb1_motor_turn_right'] = function(block) {
+	var value_speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+	var code = '';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(1, 1, ' + value_speed + ');\t';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(2, 1, 0);\n';
+	return code;
+};
+
+Blockly.JavaScript['ikb1_motor_spin_left'] = function(block) {
+	var value_speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+	var code = '';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(1, 2, ' + value_speed + ');\t';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(2, 1, ' + value_speed + ');\n';
+	return code;
+};
+
+Blockly.JavaScript['ikb1_motor_spin_right'] = function(block) {
+	var value_speed = Blockly.JavaScript.valueToCode(block, 'speed', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+	var code = '';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(1, 1, ' + value_speed + ');\t';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(2, 2, ' + value_speed + ');\n';
+	return code;
+};
+
+Blockly.JavaScript['ikb1_motor_stop'] = function(block) {
+	var code = '';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(1, 1, 0);\t';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(2, 1, 0);\n';
+	return code;
+};
+
+Blockly.JavaScript['ikb1_motor_forward2'] = function(block) {
+	var value_speed1 = Blockly.JavaScript.valueToCode(block, 'speed1', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+	var value_speed2 = Blockly.JavaScript.valueToCode(block, 'speed2', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+	var code = '';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(1, 1, ' + value_speed1 + ');\t';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(2, 1, ' + value_speed2 + ');\n';
+	return code;
+};
+
+Blockly.JavaScript['ikb1_motor_backward2'] = function(block) {
+	var value_speed1 = Blockly.JavaScript.valueToCode(block, 'speed1', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+	var value_speed2 = Blockly.JavaScript.valueToCode(block, 'speed2', Blockly.JavaScript.ORDER_ATOMIC) || '0';
+	var code = '';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(1, 2, ' + value_speed1 + ');\t';
+	code += ADDONS_IKB_1_CLASS_BEGIN + '.motor(2, 2, ' + value_speed2 + ');\n';
+	return code;
+};
+

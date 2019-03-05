@@ -25,3 +25,31 @@ Blockly.Msg.IKB_1.SERIAL_READ_ONE_BYTE = "serial อ่านข้อมูล 
 Blockly.Msg.IKB_1.SERIAL_READ_STRING = "serial อ่านข้อความ";
 Blockly.Msg.IKB_1.SERIAL_READ_LINE = "serial อ่านข้อความ 1 บรรทัด";
 Blockly.Msg.IKB_1.SERIAL_READ_UNTIL = "serial อ่านข้อความ จนกระทั่งเจอ";
+
+// New blocks
+Blockly.Msg.IKB_1_MOTOR_FORWARD_MESSAGE = "%1 วิ่งไปข้างหน้าที่ความเร็ว %2 %%";
+Blockly.Msg.IKB_1_MOTOR_FORWARD_TOOLTIP = "";
+
+Blockly.Msg.IKB_1_MOTOR_BACKWARD_MESSAGE = "%1 วิ่งถอยหลังที่ความเร็ว %2 %%";
+Blockly.Msg.IKB_1_MOTOR_BACKWARD_TOOLTIP = "";
+
+Blockly.Msg.IKB_1_MOTOR_TRUE_LEFT_MESSAGE = "%1 เลี้ยวซ้ายที่ความเร็ว %2 %%";
+Blockly.Msg.IKB_1_MOTOR_TRUE_LEFT_TOOLTIP = "";
+
+Blockly.Msg.IKB_1_MOTOR_TRUE_RIGHT_MESSAGE = "%1 เลี้ยวขวาที่ความเร็ว %2 %%";
+Blockly.Msg.IKB_1_MOTOR_TRUE_RIGHT_TOOLTIP = "";
+
+Blockly.Msg.IKB_1_MOTOR_SPIN_LEFT_MESSAGE = "%1 หมุนตัวไปทางซ้ายที่ความเร็ว %2 %%";
+Blockly.Msg.IKB_1_MOTOR_SPIN_LEFT_TOOLTIP = "";
+
+Blockly.Msg.IKB_1_MOTOR_SPEN_RIGHT_MESSAGE = "%1 หมุนตัวไปทางขวาที่ความเร็ว %2 %%";
+Blockly.Msg.IKB_1_MOTOR_SPEN_RIGHT_TOOLTIP = "";
+
+Blockly.Msg.IKB_1_MOTOR_STOP_MESSAGE = "%1 หยุดวิ่ง";
+Blockly.Msg.IKB_1_MOTOR_STOP_TOOLTIP = "";
+
+Blockly.Msg.IKB_1_MOTOR_FORWARD_2_MESSAGE = "%1 วิ่งไปข้างหน้าโดยล้อซ้ายความเร็ว %2 %% และล้อขวาความเร็ว %3 %%";
+Blockly.Msg.IKB_1_MOTOR_FORWARD_2_TOOLTIP = "";
+
+Blockly.Msg.IKB_1_MOTOR_BACKWARD_2_MESSAGE = "%1 วิ่งถอยหลังโดยล้อซ้ายความเร็ว %2 %% และล้อขวาความเร็ว %3 %%";
+Blockly.Msg.IKB_1_MOTOR_BACKWARD_2_TOOLTIP = "";
