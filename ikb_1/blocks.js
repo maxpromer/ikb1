@@ -268,6 +268,66 @@ Blockly.Blocks['ikb1_motor_backward'] = {
 	}
 };
 
+Blockly.Blocks['ikb1_motor_forward2'] = {
+	init: function() {
+		this.jsonInit({
+			"message0": Blockly.Msg.IKB_1_MOTOR_FORWARD_2_MESSAGE,
+			"args0": [{
+				"type": "field_image",
+				"src": "https://a.lnwpic.com/4p6j61.png",
+				"width": 18,
+				"height": 16,
+				"alt": "*",
+				"flipRtl": false
+			}, {
+				"type": "input_value",
+				"name": "speed1",
+				"check": "Number"
+			}, {
+				"type": "input_value",
+				"name": "speed2",
+				"check": "Number"
+			}],
+			"inputsInline": true,
+			"previousStatement": null,
+			"nextStatement": null,
+			"colour": 180,
+			"tooltip": Blockly.Msg.IKB_1_MOTOR_FORWARD_2_TOOLTIP,
+			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
+		});
+	}
+};
+
+Blockly.Blocks['ikb1_motor_backward2'] = {
+	init: function() {
+		this.jsonInit({
+			"message0": Blockly.Msg.IKB_1_MOTOR_BACKWARD_2_MESSAGE,
+			"args0": [{
+				"type": "field_image",
+				"src": "https://a.lnwpic.com/4p6j61.png",
+				"width": 18,
+				"height": 16,
+				"alt": "*",
+				"flipRtl": false
+			}, {
+				"type": "input_value",
+				"name": "speed1",
+				"check": "Number"
+			}, {
+				"type": "input_value",
+				"name": "speed2",
+				"check": "Number"
+			}],
+			"inputsInline": true,
+			"previousStatement": null,
+			"nextStatement": null,
+			"colour": 180,
+			"tooltip": Blockly.Msg.IKB_1_MOTOR_BACKWARD_2_TOOLTIP,
+			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
+		});
+	}
+};
+
 Blockly.Blocks['ikb1_motor_turn_left'] = {
 	init: function() {
 		this.jsonInit({
@@ -393,64 +453,3 @@ Blockly.Blocks['ikb1_motor_stop'] = {
 		});
 	}
 };
-
-Blockly.Blocks['ikb1_motor_forward2'] = {
-	init: function() {
-		this.jsonInit({
-			"message0": Blockly.Msg.IKB_1_MOTOR_FORWARD_2_MESSAGE,
-			"args0": [{
-				"type": "field_image",
-				"src": "https://a.lnwpic.com/4p6j61.png",
-				"width": 18,
-				"height": 16,
-				"alt": "*",
-				"flipRtl": false
-			}, {
-				"type": "input_value",
-				"name": "speed1",
-				"check": "Number"
-			}, {
-				"type": "input_value",
-				"name": "speed2",
-				"check": "Number"
-			}],
-			"inputsInline": true,
-			"previousStatement": null,
-			"nextStatement": null,
-			"colour": 180,
-			"tooltip": Blockly.Msg.IKB_1_MOTOR_FORWARD_2_TOOLTIP,
-			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
-		});
-	}
-};
-
-Blockly.Blocks['ikb1_motor_backward2'] = {
-	init: function() {
-		this.jsonInit({
-			"message0": Blockly.Msg.IKB_1_MOTOR_BACKWARD_2_MESSAGE,
-			"args0": [{
-				"type": "field_image",
-				"src": "https://a.lnwpic.com/4p6j61.png",
-				"width": 18,
-				"height": 16,
-				"alt": "*",
-				"flipRtl": false
-			}, {
-				"type": "input_value",
-				"name": "speed1",
-				"check": "Number"
-			}, {
-				"type": "input_value",
-				"name": "speed2",
-				"check": "Number"
-			}],
-			"inputsInline": true,
-			"previousStatement": null,
-			"nextStatement": null,
-			"colour": 180,
-			"tooltip": Blockly.Msg.IKB_1_MOTOR_BACKWARD_2_TOOLTIP,
-			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
-		});
-	}
-};
-
