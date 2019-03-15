@@ -27,30 +27,30 @@ Blockly.Msg.IKB_1.SERIAL_READ_LINE = "serial read line";
 Blockly.Msg.IKB_1.SERIAL_READ_UNTIL = "serial read until";
 
 // New blocks
-Blockly.Msg.IKB_1_MOTOR_FORWARD_MESSAGE = "%1 move forward at speed %2 %%";
+Blockly.Msg.IKB_1_MOTOR_FORWARD_MESSAGE = "%1 Move Forward at speed %2 %%";
 Blockly.Msg.IKB_1_MOTOR_FORWARD_TOOLTIP = "";
 
-Blockly.Msg.IKB_1_MOTOR_BACKWARD_MESSAGE = "%1 move backward at speed %2 %%";
+Blockly.Msg.IKB_1_MOTOR_BACKWARD_MESSAGE = "%1 Move Backward at speed %2 %%";
 Blockly.Msg.IKB_1_MOTOR_BACKWARD_TOOLTIP = "";
 
-Blockly.Msg.IKB_1_MOTOR_TRUE_LEFT_MESSAGE = "%1 turn left at speed %2 %%";
+Blockly.Msg.IKB_1_MOTOR_TRUE_LEFT_MESSAGE = "%1 Turn Left at speed %2 %%";
 Blockly.Msg.IKB_1_MOTOR_TRUE_LEFT_TOOLTIP = "";
 
-Blockly.Msg.IKB_1_MOTOR_TRUE_RIGHT_MESSAGE = "%1 turn right at speed %2 %%";
+Blockly.Msg.IKB_1_MOTOR_TRUE_RIGHT_MESSAGE = "%1 Turn Right at speed %2 %%";
 Blockly.Msg.IKB_1_MOTOR_TRUE_RIGHT_TOOLTIP = "";
 
-Blockly.Msg.IKB_1_MOTOR_SPIN_LEFT_MESSAGE = "%1 spin left at speed %2 %%";
+Blockly.Msg.IKB_1_MOTOR_SPIN_LEFT_MESSAGE = "%1 Spin Left at speed %2 %%";
 Blockly.Msg.IKB_1_MOTOR_SPIN_LEFT_TOOLTIP = "";
 
-Blockly.Msg.IKB_1_MOTOR_SPEN_RIGHT_MESSAGE = "%1 spin right at speed %2 %%";
+Blockly.Msg.IKB_1_MOTOR_SPEN_RIGHT_MESSAGE = "%1 Spin Right at speed %2 %%";
 Blockly.Msg.IKB_1_MOTOR_SPEN_RIGHT_TOOLTIP = "";
 
-Blockly.Msg.IKB_1_MOTOR_STOP_MESSAGE = "%1 stop moving";
+Blockly.Msg.IKB_1_MOTOR_STOP_MESSAGE = "%1 Stop Moving";
 Blockly.Msg.IKB_1_MOTOR_STOP_TOOLTIP = "";
 
-Blockly.Msg.IKB_1_MOTOR_FORWARD_2_MESSAGE = "%1 move forward left wheel at speed %2 %% and right wheel at speed %3 %%";
+Blockly.Msg.IKB_1_MOTOR_FORWARD_2_MESSAGE = "%1 Move Forward left wheel at speed %2 %% and right wheel at speed %3 %%";
 Blockly.Msg.IKB_1_MOTOR_FORWARD_2_TOOLTIP = "";
 
-Blockly.Msg.IKB_1_MOTOR_BACKWARD_2_MESSAGE = "%1 move backward left wheel at speed %2 %% and right wheel at speed %3 %%";
+Blockly.Msg.IKB_1_MOTOR_BACKWARD_2_MESSAGE = "%1 Move Backward left wheel at speed %2 %% and right wheel at speed %3 %%";
 Blockly.Msg.IKB_1_MOTOR_BACKWARD_2_TOOLTIP = "";
 
