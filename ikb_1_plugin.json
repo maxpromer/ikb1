@@ -3,5 +3,13 @@
 		"en": "iKB-1",
 		"th": "iKB-1"
 	},
-	"color": 180
+	"color": 180,
+	"title": "iKB-1",
+	"author": "INEX",
+	"description": "ปลั๊กอินสำหรับบอร์ด iKB-1",
+	"git": "https://github.com/maxpromer/ikb_1_plugin",
+	"image": "https://store.kidbright.info/upload/cover-image/1545744054-2Xxc0S.png",
+	"name": "ikb-1",
+	"board": "kidbright",
+	"version": "2.1.1"
 }
