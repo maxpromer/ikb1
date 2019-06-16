@@ -9,7 +9,7 @@
 	"description": "ปลั๊กอินสำหรับบอร์ด iKB-1",
 	"git": "https://github.com/maxpromer/ikb-1-plugin",
 	"image": "https://store.kidbright.info/upload/cover-image/1545744054-2Xxc0S.png",
-	"name": "ikb-1",
+	"name": "ikb_1",
 	"board": "kidbright",
 	"version": "2.1.1"
 }
