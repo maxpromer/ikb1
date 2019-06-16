@@ -1,0 +1,16 @@
+{
+  "name": "ikb-1",
+  "title" : "iKB-1",
+  "keywords": "iKB-1",
+  "description": "ปลั๊กอินสำหรับบอร์ด iKB-1",
+  "homepage": "https://www.inex.co.th/",
+  "license": "MIT",
+  "git": "https://github.com/maxpromer/ikb_1_plugin",
+  "author": "INEX",
+  "email": "tech@inex.co.th",
+  "url": "https://www.inex.co.th/",
+  "version": "2.1.1",
+  "board" : "kidbright",
+  "platform": ["esp-idf"],
+  "image" : "https://store.kidbright.info/upload/cover-image/1545744054-2Xxc0S.png"
+}
