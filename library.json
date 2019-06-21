@@ -11,6 +11,6 @@
   "url": "https://www.inex.co.th/",
   "version": "2.1.1",
   "board" : "kidbright",
-  "platform": ["esp-idf"],
+  "platform": [],
   "image" : "https://store.kidbright.info/upload/cover-image/1545744054-2Xxc0S.png"
 }
