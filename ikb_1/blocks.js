@@ -24,6 +24,17 @@ Blockly.Blocks['ikb1_digital_write'] = {
 		this.setColour(180);
 		this.setTooltip("");
 		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_digital_write">
+		  	<value name="value">
+				<shadow type="math_number">
+					<field name="VALUE">1</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -57,6 +68,17 @@ Blockly.Blocks['ikb1_motor'] = {
 		this.setColour(180);
 		this.setTooltip("");
 		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_motor">
+		  	<value name="speed">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -74,6 +96,17 @@ Blockly.Blocks['ikb1_servo'] = {
 		this.setColour(180);
 		this.setTooltip("");
 		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_servo">
+		  	<value name="angle">
+				<shadow type="math_number">
+					<field name="VALUE">90</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -95,8 +128,40 @@ Blockly.Blocks['ikb1_servo2'] = {
 		this.setColour(180);
 		this.setTooltip("");
 		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_servo2">
+		  	<value name="speed">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
+
+Blockly.Blocks['serial_header'] = {
+	init: function () {
+
+	},
+	xmlToolbox: function() {
+		// Create our shared stylesheet:
+		const sheet = new CSSStyleSheet();
+		sheet.replaceSync(`
+		.HeaderLabelStyle > .blocklyFlyoutLabelText {
+			font-size: 26px;
+		}
+		`);
+		
+		// Apply the stylesheet to a document:
+		document.adoptedStyleSheets = [sheet];
+
+		return `<label text="Serial" web-class="HeaderLabelStyle"></label>`;
+	}
+};
+
 
 Blockly.Blocks['ikb1_serial_config'] = {
 	init: function() {
@@ -123,6 +188,15 @@ Blockly.Blocks['ikb1_serial_write'] = {
 		this.setColour(180);
 		this.setTooltip("");
 		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_serial_write">
+		  	<value name="data">
+				<shadow type="basic_string"></shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -137,6 +211,15 @@ Blockly.Blocks['ikb1_serial_write_line'] = {
 		this.setColour(180);
 		this.setTooltip("");
 		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_serial_write_line">
+		  	<value name="data">
+				<shadow type="basic_string"></shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -176,6 +259,17 @@ Blockly.Blocks['ikb1_serial_read'] = {
 		this.setColour(180);
 		this.setTooltip("");
 		this.setHelpUrl("https://store.kidbright.info/plugin/7/iKB-1");
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_serial_read">
+		  	<value name="count">
+				<shadow type="math_number">
+					<field name="VALUE">1</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -216,6 +310,26 @@ Blockly.Blocks['ikb1_serial_read_until'] = {
 	}
 }
 
+Blockly.Blocks['robot_car_header'] = {
+	init: function () {
+
+	},
+	xmlToolbox: function() {
+		// Create our shared stylesheet:
+		const sheet = new CSSStyleSheet();
+		sheet.replaceSync(`
+		.HeaderLabelStyle > .blocklyFlyoutLabelText {
+			font-size: 26px;
+		}
+		`);
+		
+		// Apply the stylesheet to a document:
+		document.adoptedStyleSheets = [sheet];
+
+		return `<label text="Robot Car" web-class="HeaderLabelStyle"></label>`;
+	}
+};
+
 Blockly.Blocks['ikb1_motor_forward'] = {
 	init: function() {
 		this.jsonInit({
@@ -239,6 +353,17 @@ Blockly.Blocks['ikb1_motor_forward'] = {
 			"tooltip": Blockly.Msg.IKB_1_MOTOR_FORWARD_TOOLTIP,
 			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
 		});
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_motor_forward">
+		  	<value name="speed">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -265,6 +390,17 @@ Blockly.Blocks['ikb1_motor_backward'] = {
 			"tooltip": Blockly.Msg.IKB_1_MOTOR_BACKWARD_TOOLTIP,
 			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
 		});
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_motor_backward">
+		  	<value name="speed">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -295,6 +431,22 @@ Blockly.Blocks['ikb1_motor_forward2'] = {
 			"tooltip": Blockly.Msg.IKB_1_MOTOR_FORWARD_2_TOOLTIP,
 			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
 		});
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_motor_forward2">
+		  	<value name="speed1">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+			<value name="speed2">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -325,6 +477,22 @@ Blockly.Blocks['ikb1_motor_backward2'] = {
 			"tooltip": Blockly.Msg.IKB_1_MOTOR_BACKWARD_2_TOOLTIP,
 			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
 		});
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_motor_backward2">
+		  	<value name="speed1">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+			<value name="speed2">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -351,6 +519,17 @@ Blockly.Blocks['ikb1_motor_turn_left'] = {
 			"tooltip": Blockly.Msg.IKB_1_MOTOR_TRUE_LEFT_TOOLTIP,
 			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
 		});
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_motor_turn_left">
+		  	<value name="speed">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -377,6 +556,17 @@ Blockly.Blocks['ikb1_motor_turn_right'] = {
 			"tooltip": Blockly.Msg.IKB_1_MOTOR_TRUE_RIGHT_TOOLTIP,
 			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
 		});
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_motor_turn_right">
+		  	<value name="speed">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -403,6 +593,17 @@ Blockly.Blocks['ikb1_motor_spin_left'] = {
 			"tooltip": Blockly.Msg.IKB_1_MOTOR_SPIN_LEFT_TOOLTIP,
 			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
 		});
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_motor_spin_left">
+		  	<value name="speed">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
@@ -429,6 +630,17 @@ Blockly.Blocks['ikb1_motor_spin_right'] = {
 			"tooltip": Blockly.Msg.IKB_1_MOTOR_SPEN_RIGHT_TOOLTIP,
 			"helpUrl": "https://store.kidbright.info/plugin/7/iKB-1"
 		});
+	},
+	xmlToolbox: function() {
+		return `
+		<block type="ikb1_motor_spin_right">
+		  	<value name="speed">
+				<shadow type="math_number">
+					<field name="VALUE">50</field>
+				</shadow>
+			</value>
+		</block>
+		`;
 	}
 };
 
