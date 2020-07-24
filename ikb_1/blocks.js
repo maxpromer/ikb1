@@ -158,7 +158,10 @@ Blockly.Blocks['serial_header'] = {
 		// Apply the stylesheet to a document:
 		document.adoptedStyleSheets = [sheet];
 
-		return `<label text="Serial" web-class="HeaderLabelStyle"></label>`;
+		return `
+		<sep gap="50"></sep>
+		<label text="Serial" web-class="HeaderLabelStyle"></label>
+		`;
 	}
 };
 
@@ -326,7 +329,10 @@ Blockly.Blocks['robot_car_header'] = {
 		// Apply the stylesheet to a document:
 		document.adoptedStyleSheets = [sheet];
 
-		return `<label text="Robot Car" web-class="HeaderLabelStyle"></label>`;
+		return `
+		<sep gap="50"></sep>
+		<label text="Robot Car" web-class="HeaderLabelStyle"></label>
+		`;
 	}
 };
 
