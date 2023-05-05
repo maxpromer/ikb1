@@ -62,6 +62,7 @@ class iKB_1 : public Device {
 		bool prop_write(int index, char *value);
 		
 		// method
+		void set_address(uint8_t new_address = 0x48) ;
 		bool reset() ;
 		uint8_t digital_read(uint8_t ch, bool pullup = false) ;
 		bool digital_write(uint8_t ch, uint8_t value) ;

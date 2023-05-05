@@ -212,6 +212,10 @@ bool iKB_1::send(uint8_t command, int request_length) {
 	return ret == ESP_OK;
 }
 
+void iKB_1::set_address(uint8_t new_address) {
+	this->address = new_address;
+}
+
 bool iKB_1::reset() {
 	return send((uint8_t)0x0);
 }

@@ -1,6 +1,12 @@
 var ADDONS_IKB_1_ADDRESS = '0x48';
 var ADDONS_IKB_1_CLASS_BEGIN = 'DEV_I2C1.iKB_1(0, ' + ADDONS_IKB_1_ADDRESS + ')';
 
+Blockly.JavaScript['ikb1_select_i2c_address'] = function(block) {
+	var dropdown_addr = block.getFieldValue('addr');
+	var code = ADDONS_IKB_1_CLASS_BEGIN + '.set_address(' + dropdown_addr + ')';
+	return code;
+};
+
 Blockly.JavaScript['ikb1_digital_read'] = function(block) {
 	var dropdown_ch = block.getFieldValue('ch');
 	var code = ADDONS_IKB_1_CLASS_BEGIN + '.digital_read(' + dropdown_ch + ')';
