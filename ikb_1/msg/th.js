@@ -1,5 +1,7 @@
 Blockly.Msg.IKB_1 = {};
 
+Blockly.Msg.IKB_1.SELECT_I2C_ADDRESS = "เลือกหมายเลข I2C เป็น";
+
 Blockly.Msg.IKB_1.DIGTIAL_READ_PIN = "อ่านค่าดิจิทัลที่ช่อง";
 Blockly.Msg.IKB_1.DIGTIAL_WRITE_PIN = "เขียนค่าดิจิทัลที่ช่อง";
 Blockly.Msg.IKB_1.TO = "เป็น";

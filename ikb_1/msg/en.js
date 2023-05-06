@@ -1,5 +1,7 @@
 Blockly.Msg.IKB_1 = {};
 
+Blockly.Msg.IKB_1.SELECT_I2C_ADDRESS = "select I2C address";
+
 Blockly.Msg.IKB_1.DIGTIAL_READ_PIN = "digital read pin";
 Blockly.Msg.IKB_1.DIGTIAL_WRITE_PIN = "digital write pin";
 Blockly.Msg.IKB_1.TO = "to";

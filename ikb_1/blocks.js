@@ -1,7 +1,7 @@
 Blockly.Blocks['ikb1_select_i2c_address'] = {
 	init: function () {
 		this.appendDummyInput()
-			.appendField("select I2C address")
+			.appendField(Blockly.Msg.IKB_1.SELECT_I2C_ADDRESS)
 			.appendField(new Blockly.FieldDropdown([["0x48", "0x48"], ["0x49", "0x49"]]), "addr");
 		this.setPreviousStatement(true, null);
 		this.setNextStatement(true, null);
